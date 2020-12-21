@@ -9,7 +9,7 @@
         Title="Simple Validator" Height="450" Width="800">
     <Grid Margin="100">
         <StackPanel>
-            <Label>Username</Label>
+            <Label>Time</Label>
             <TextBox Text="{Binding Username, ValidatesOnDataErrors=True,
                 UpdateSourceTrigger=PropertyChanged}"
                      ToolTip="{Binding ErrorCollection[Username]}"/>
