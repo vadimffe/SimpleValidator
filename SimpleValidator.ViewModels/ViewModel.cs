@@ -15,7 +15,7 @@ namespace SimpleValidator.ViewModels
 
         private void SaveSettings()
         {
-            if (ValidateTime(TimeLimit))
+            if (ValidateTime(TimeLimit) && ValidateTime(TimeRecordInterval))
                 MessageBox.Show("Save");
         }
 
