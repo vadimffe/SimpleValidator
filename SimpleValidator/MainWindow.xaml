@@ -1,0 +1,19 @@
+﻿<Window x:Class="SimpleValidator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleValidator" 
+        xmlns:viewmodels="clr-namespace:SimpleValidator.ViewModels;assembly=SimpleValidator.ViewModels"
+        mc:Ignorable="d"
+        Title="Simple Validator" Height="450" Width="800">
+    <Grid Margin="100">
+        <StackPanel>
+            <Label>Username</Label>
+            <TextBox Text="{Binding Username, ValidatesOnDataErrors=True,
+                UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="{Binding ErrorCollection[Username]}"/>
+            <Button Command="{Binding StopManualTimerCommand}" Height="30" Width="100" Content="Save"></Button>
+        </StackPanel>
+    </Grid>
+</Window>
