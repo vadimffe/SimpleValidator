@@ -10,11 +10,11 @@
     <Grid Margin="100">
         <StackPanel>
             <Label>Time</Label>
-            <TextBox Text="{Binding TimeLimit, ValidatesOnDataErrors=True,
+            <TextBox Text="{Binding TimeLimit, ValidatesOnDataErrors=True, Mode=TwoWay, 
                 UpdateSourceTrigger=PropertyChanged}"
                      ToolTip="{Binding ErrorCollection[TimeLimit]}"/>
             <Label>Interval</Label>
-            <TextBox Text="{Binding TimeRecordInterval, ValidatesOnDataErrors=True,
+            <TextBox Text="{Binding TimeRecordInterval, ValidatesOnDataErrors=True, Mode=TwoWay, 
                 UpdateSourceTrigger=PropertyChanged}"
                      ToolTip="{Binding ErrorCollection[TimeRecordInterval]}"/>
             
