@@ -10,9 +10,14 @@
     <Grid Margin="100">
         <StackPanel>
             <Label>Time</Label>
-            <TextBox Text="{Binding Username, ValidatesOnDataErrors=True,
+            <TextBox Text="{Binding TimeLimit, ValidatesOnDataErrors=True,
                 UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="{Binding ErrorCollection[Username]}"/>
+                     ToolTip="{Binding ErrorCollection[TimeLimit]}"/>
+            <Label>Interval</Label>
+            <TextBox Text="{Binding TimeRecordInterval, ValidatesOnDataErrors=True,
+                UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="{Binding ErrorCollection[TimeRecordInterval]}"/>
+            
             <Button Command="{Binding StopManualTimerCommand}" Height="30" Width="100" Content="Save"></Button>
         </StackPanel>
     </Grid>
