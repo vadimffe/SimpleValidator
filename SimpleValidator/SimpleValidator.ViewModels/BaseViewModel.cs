@@ -2,83 +2,31 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace SimpleValidator.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// A global lock for property checks so prevent locking on different instances of expressions.
+        /// Considering how fast this check will always be it isn't an issue to globally lock all callers.
+        /// </summary>
+        protected object mPropertyValueCheckLock = new object();
 
-        private Dictionary<string, object> propertyValueMap;
+        /// <summary>
+        /// The event that is fired when any child property changes its value
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
 
-        protected BaseViewModel()
+        /// <summary>
+        /// Call this to fire a <see \cref="PropertyChanged"/> event
+        /// </summary>
+        /// <param \name=\"name\"></param>
+        // public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            propertyValueMap = new Dictionary<string, object>();
-        }
-
-        private void InternalPropertyUpdate(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        protected void OnPropertyChanged<T>(Expression<Func<T>> path)
-        {
-            string propertyName = GetPropertyName(path);
-            InternalPropertyUpdate(propertyName);
-        }
-
-
-        protected T Get<T>(Expression<Func<T>> path)
-        {
-            return Get(path, default(T));
-        }
-
-        protected virtual T Get<T>(Expression<Func<T>> path, T defaultValue)
-        {
-            var propertyName = GetPropertyName(path);
-            if (propertyValueMap.ContainsKey(propertyName))
-            {
-                return (T)propertyValueMap[propertyName];
-            }
-            else
-            {
-                propertyValueMap.Add(propertyName, defaultValue);
-                return defaultValue;
-            }
-        }
-
-        protected void Set<T>(Expression<Func<T>> path, T value)
-        {
-            Set(path, value, false);
-        }
-
-        protected virtual void Set<T>(Expression<Func<T>> path, T value, bool forceUpdate)
-        {
-            var oldValue = Get(path);
-            var propertyName = GetPropertyName(path);
-
-            if (!object.Equals(value, oldValue) || forceUpdate)
-            {
-                propertyValueMap[propertyName] = value;
-                OnPropertyChanged(path);
-            }
-        }
-
-        protected static string GetPropertyName<T>(Expression<Func<T>> expression)
-        {
-            if (expression == null)
-                throw new ArgumentNullException("expression");
-
-            Expression body = expression.Body;
-            MemberExpression memberExpression = body as MemberExpression;
-            if (memberExpression == null)
-            {
-                memberExpression = (MemberExpression)((UnaryExpression)body).Operand;
-            }
-            return memberExpression.Member.Name;
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

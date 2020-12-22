@@ -3,22 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SimpleValidator" 
         xmlns:viewmodels="clr-namespace:SimpleValidator.ViewModels;assembly=SimpleValidator.ViewModels"
         mc:Ignorable="d"
         Title="Simple Validator" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="validationTooltipStyle" TargetType="{x:Type ToolTip}">
+            <Setter Property="DataContext" Value="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <ItemsControl ItemsSource="{Binding Path=(Validation.Errors)}" Background="#FFFFFF" 
+                                      BorderThickness="1" BorderBrush="DarkRed" Margin="0 0 3 0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ErrorContent}" Foreground="DarkRed" Margin="5 5 5 5"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid Margin="100">
         <StackPanel>
             <Label>Time</Label>
-            <TextBox Text="{Binding TimeLimit, ValidatesOnDataErrors=True, Mode=TwoWay, 
-                UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="{Binding ErrorCollection[TimeLimit]}"/>
-            <Label>Interval</Label>
-            <TextBox Text="{Binding TimeRecordInterval, ValidatesOnDataErrors=True, Mode=TwoWay, 
-                UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="{Binding ErrorCollection[TimeRecordInterval]}"/>
+            <TextBox x:Name="TimeLimit"
+                 Grid.Row="0"
+                 Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="TimeLimit"
+                         UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <viewmodels:TimeValidationRule timeValidation="HH:mm" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+                <TextBox.ToolTip>
+                    <ToolTip Style="{StaticResource validationTooltipStyle}">
+                        <TextBlock></TextBlock>
+                    </ToolTip>
+                </TextBox.ToolTip>
+            </TextBox>
 
-            <Button Command="{Binding StopManualTimerCommand}" Height="30" Width="100" Content="Save"></Button>
+            <Label>Interval</Label>
+            <TextBox x:Name="TimeRecordInterval"
+                 Grid.Row="0"
+                 Grid.Column="1">
+                <TextBox.Text>
+                    <Binding Path="TimeRecordInterval"
+                         UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <viewmodels:NumberValidationRule numberValidation="number" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+                <TextBox.ToolTip>
+                    <ToolTip Style="{StaticResource validationTooltipStyle}">
+                        <TextBlock></TextBlock>
+                    </ToolTip>
+                </TextBox.ToolTip>
+            </TextBox>
+
+            <Button Command="{Binding SaveCommand}" Height="30" Width="100" Content="Save"></Button>
 
         </StackPanel>
     </Grid>
