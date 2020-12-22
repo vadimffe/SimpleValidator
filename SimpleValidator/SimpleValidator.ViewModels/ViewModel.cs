@@ -16,9 +16,9 @@ namespace SimpleValidator.ViewModels
         {
             this.errors = new PropertyErrors(this, this.OnErrorsChanged);
 
-            //this.TimeLimit = "12:23";
+            this.TimeLimit = "12:23";
 
-            //this.TimeRecordInterval = "11";
+            this.TimeRecordInterval = "11";
         }
 
         private void SaveSettings()
