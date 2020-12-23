@@ -24,7 +24,7 @@ namespace SimpleValidator.ViewModels
 
             else if (!ValidateTime((string)value))
             {
-                return new ValidationResult(false, "Value must be number");
+                return new ValidationResult(false, "Value must be HH:mm format");
             }
 
             return ValidationResult.ValidResult;
