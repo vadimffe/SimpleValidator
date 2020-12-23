@@ -63,16 +63,6 @@
 
             <Button Command="{Binding SaveCommand}" Height="30" Width="100" Content="Save" 
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}" >
-                        <Setter Property="ToolTip" Value="DEFAULT_TOOLTIP" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsAutomaticSell, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                <Setter Property="ToolTip" Value="NEW_TOOLTIP" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
             </Button>
 
         </StackPanel>
