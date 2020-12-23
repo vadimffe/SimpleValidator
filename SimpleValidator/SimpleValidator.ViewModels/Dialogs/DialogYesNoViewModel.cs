@@ -1,9 +1,10 @@
-﻿using SimpleValidator.DialogService;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using SimpleValidator.DialogService;
+using SimpleValidator.ViewModels.Commands;
 
-namespace SimpleValidator.ViewModels
+namespace SimpleValidator.ViewModels.Dialogs
 {
     public class DialogYesNoViewModel : DialogViewModelBase
     {
@@ -13,22 +14,22 @@ namespace SimpleValidator.ViewModels
         private ICommand yesCommand = null;
         public ICommand YesCommand
         {
-            get { return yesCommand; }
-            set { yesCommand = value; }
+            get { return this.yesCommand; }
+            set { this.yesCommand = value; }
         }
 
         private ICommand noCommand = null;
         public ICommand NoCommand
         {
-            get { return noCommand; }
-            set { noCommand = value; }
+            get { return this.noCommand; }
+            set { this.noCommand = value; }
         }
 
         public string Message { get; private set; }
 
         public DialogYesNoViewModel(string message)
         {
-            Message = message;
+            this.Message = message;
             this.yesCommand = new RelayCommand(OnYesClicked);
             this.noCommand = new RelayCommand(OnNoClicked);
         }

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace SimpleValidator.ViewModels
+namespace SimpleValidator.ViewModels.Commands
 {
     public class RelayCommand : ICommand
     {

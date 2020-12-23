@@ -1,8 +1,7 @@
-﻿using SimpleValidator.ViewModels;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
+using SimpleValidator.ViewModels;
 
-namespace SimpleValidator
+namespace SimpleValidator.Main
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -13,8 +12,8 @@ namespace SimpleValidator
 
         public MainWindow()
         {
-            ViewModel = new ViewModel();
-            DataContext = ViewModel;
+            this.ViewModel = new ViewModel();
+            this.DataContext = this.ViewModel;
             InitializeComponent();
         }
     }

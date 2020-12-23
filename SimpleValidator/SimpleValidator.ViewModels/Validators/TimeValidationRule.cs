@@ -1,40 +1,42 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Controls;
 
-namespace SimpleValidator.ViewModels
+namespace SimpleValidator.ViewModels.Validators
 {
-    public class TimeValidationRule : ValidationRule
+    public class TimeValidationRule : ValidationRule<string>
     {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        private string timeFormat = "HH:mm";
+
+        // Call this method for compiletime type checking!
+        public override ValidationResult Validate(string value, CultureInfo cultureInfo) => IsValidInput(value);
+
+        private ValidationResult IsValidInput(string input)
         {
-            var text = value as string;
-            return IsValidInput(text, out string errorMessage)
-              ? ValidationResult.ValidResult
-              : new ValidationResult(false, errorMessage);
-        }
-        private bool IsValidInput(string input, out string errorMessage)
-        {
-            errorMessage = string.Empty;
             // Allow empty input
             if (string.IsNullOrWhiteSpace(input))
             {
-                return true;
+                return ValidationResult.CreateWarning("Enter a valid time");
             }
+
             // Test if input is a pure number
             if (int.TryParse(input, out _))
             {
                 // Test if number consists of max 2 digits
-                return input.Length < 3;
+                return input.Length < 3
+                    ? ValidationResult.CreateValid()
+                    : ValidationResult.CreateError("Only 2 digit format 'HH:mm' allowed");
             }
+
             // If value is not a pure number (e.g., contains colon),
             // then check if it's a valid time
-            return IsValidTime(input, out errorMessage);
+            return IsValidTime(input);
         }
-        private bool IsValidTime(string input, out string errorMessage)
+
+
+
+        private ValidationResult IsValidTime(string input)
         {
-            errorMessage = string.Empty;
             // Test if value is valid time
             if (TimeSpan.TryParse(input, new DateTimeFormatInfo(), out _))
             {
@@ -44,18 +46,22 @@ namespace SimpleValidator.ViewModels
                     // Test if successive volons are entered (only interesting for HH:mm:ss format)
                     if (!input.Contains("::"))
                     {
-                        return true;
+                        return ValidationResult.CreateValid();
                     }
+                    return ValidationResult.CreateError("Invalid time format: no double colon allowed. Format must be 'HH:mm'.");
                 }
+                return ValidationResult.CreateError("Invalid time format: too many groups. Format must be 'HH:mm'.");
             }
+
             // Input is not a valid time.
-            // Test if input ends with a colon (user is in the ,iddle of an input)
+            // Test if input ends with a colon
             if (!input.EndsWith(":", StringComparison.OrdinalIgnoreCase))
             {
-                return false;
+                return ValidationResult.CreateError("Invalid time format. Format must be 'HH:mm'.");
             }
+
             // and if max number of colons reached
-            return input.Count(character => character.Equals(':')) < 2;
+            return input.Count(character => character.Equals(':')) < 2 ? ValidationResult.CreateValid() : ValidationResult.CreateError("Invalid time format: too many groups. Format must be 'HH:mm'.");
         }
     }
 }
