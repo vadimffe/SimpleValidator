@@ -16,7 +16,6 @@ namespace SimpleValidator.ViewModels
                        out _);
         }
 
-        // Call this method for compiletime type checking!
         public ValidationResult Validate(string timeValue, CultureInfo cultureInfo)
         {
             return Validate(timeValue, cultureInfo);

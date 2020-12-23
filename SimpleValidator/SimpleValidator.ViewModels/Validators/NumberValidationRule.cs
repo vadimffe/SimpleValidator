@@ -8,23 +8,22 @@ namespace SimpleValidator.ViewModels
     {
         private bool ValidateNumber(string number)
         {
-            int ignored;
-            return int.TryParse(number, out ignored);
+            return int.TryParse(number, out _);
         }
 
+        // Call this method for compiletime type checking!
+        public ValidationResult Validate(string timeValue, CultureInfo cultureInfo)
+        {
+            return Validate(timeValue, cultureInfo);
+        }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (string.IsNullOrEmpty((string)value))
-            {
-                return new ValidationResult(false, "Field cannot be empty");
-            }
-
-            else if (!ValidateNumber((string)value))
-            {
-                return new ValidationResult(false, "Value must be number");
-            }
-
-            return ValidationResult.ValidResult;
+            var text = value as string;
+            return string.IsNullOrEmpty(text)
+                ? new ValidationResult(false, $"Must not be empty")
+                : ValidateNumber(text)
+                    ? ValidationResult.ValidResult
+                    : new ValidationResult(false, $"Must be number");
         }
     }
 }
