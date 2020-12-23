@@ -6,29 +6,22 @@ namespace SimpleValidator.ViewModels
 {
     public class NumberValidationRule : ValidationRule
     {
-        public string numberValidation { get; set; }
-
-        private bool ValidateNumber(string time)
+        private bool ValidateNumber(string number)
         {
             int ignored;
-            return int.TryParse(time, out ignored);
+            return int.TryParse(number, out ignored);
         }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            var text = value as string;
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty((string)value))
             {
-                return !text.StartsWith(this.numberValidation)
-                           ? new ValidationResult(false, $"Must not be empty")
-                           : ValidationResult.ValidResult;
+                return new ValidationResult(false, "Field cannot be empty");
             }
 
-            else if (!ValidateNumber(text))
+            else if (!ValidateNumber((string)value))
             {
-                return !text.StartsWith(this.numberValidation)
-                           ? new ValidationResult(false, $"Must be {this.numberValidation} format")
-                           : ValidationResult.ValidResult;
+                return new ValidationResult(false, "Value must be number");
             }
 
             return ValidationResult.ValidResult;

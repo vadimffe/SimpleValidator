@@ -1,5 +1,6 @@
 ﻿using SimpleValidator.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SimpleValidator
 {
@@ -12,7 +13,8 @@ namespace SimpleValidator
 
         public MainWindow()
         {
-            DataContext = new ViewModel();
+            ViewModel = new ViewModel();
+            DataContext = ViewModel;
             InitializeComponent();
         }
     }
