@@ -43,7 +43,7 @@
         <StackPanel>
             <Label>Time</Label>
             <TextBox Text="{Binding TimeLimit, ValidatesOnNotifyDataErrors=True, 
-                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                UpdateSourceTrigger=PropertyChanged}" >
                 <TextBox.ToolTip>
                     <ToolTip Style="{StaticResource ValidationErrorTemplate}">
                         <TextBlock></TextBlock>
@@ -53,7 +53,7 @@
 
             <Label>Interval</Label>
             <TextBox Text="{Binding TimeRecordInterval, ValidatesOnNotifyDataErrors=True,
-                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                UpdateSourceTrigger=PropertyChanged}" >
                 <TextBox.ToolTip>
                     <ToolTip Style="{StaticResource ValidationErrorTemplate}">
                         <TextBlock></TextBlock>

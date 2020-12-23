@@ -13,8 +13,9 @@ namespace SimpleValidator.ViewModels
 {
     public class ViewModel : BaseViewModel, INotifyDataErrorInfo
     {
+        private ValidationMode ValidationMode { get; set; }
         public ICommand SaveCommand => new RelayCommand(param => this.SaveSettings());
-
+        
         // Example property, which validates its value before applying it
         private string _timeRecordInterval;
         public string TimeRecordInterval
@@ -31,7 +32,7 @@ namespace SimpleValidator.ViewModels
                 }
             }
         }
-
+        
         private string _timeLimit;
         public string TimeLimit
         {
@@ -43,32 +44,34 @@ namespace SimpleValidator.ViewModels
                 {
                     // Accept the valid value
                     this._timeLimit = value;
-                    OnPropertyChanged();
                 }
+                OnPropertyChanged();
             }
         }
-
+        
         // Constructor
         public ViewModel()
         {
+            this.ValidationMode = ValidationMode.SuppressInvalidInput;
+            
             this._timeRecordInterval = "1";
             this._timeLimit = "12:30";
-
+            
             this.Errors = new Dictionary<string, List<string>>();
             this.ValidationRules = new Dictionary<string, List<ValidationRule>>();
-
+            
             // Create a Dictionary of validation rules for fast lookup. 
             // Each property name of a validated property maps to one or more ValidationRule.
             this.ValidationRules.Add(nameof(this.TimeRecordInterval), new List<ValidationRule>() { new NumberValidationRule() });
             this.ValidationRules.Add(nameof(this.TimeLimit), new List<ValidationRule>() { new TimeValidationRule() });
         }
-
+        
         private void SaveSettings()
         {
             if (!HasErrors)
                 Debug.WriteLine("Save");
         }
-
+        
         // Validation method. 
         // Is called from each property which needs to validate its value.
         // Because the parameter 'propertyName' is decorated with the 'CallerMemberName' attribute.
@@ -79,28 +82,31 @@ namespace SimpleValidator.ViewModels
             // Clear previous errors of the current property to be validated 
             this.Errors.Remove(propertyName);
             OnErrorsChanged(propertyName);
-
+            
             if (this.ValidationRules.TryGetValue(propertyName, out List<ValidationRule> propertyValidationRules))
             {
                 // Apply all the rules that are associated with the current property and validate the property's value
-                propertyValidationRules.ForEach(
-                  (validationRule) =>
-                  {
-                      ValidationResult result = validationRule.Validate(propertyValue, CultureInfo.CurrentCulture);
-                      if (!result.IsValid)
-                      {
-                          // Store the error message of the validated property
-                          AddError(propertyName, result.ErrorContent as string);
-                      }
-                  });
-
-                return PropertyHasErrors(propertyName);
+                if (this.ValidationMode == ValidationMode.SuppressInvalidInput)
+                {
+                    return propertyValidationRules
+                        .Select(validationRule => validationRule.Validate(propertyValue, CultureInfo.CurrentCulture))
+                        .All(result => result.IsValid);
+                }
+                
+                propertyValidationRules
+                    .Select(validationRule => validationRule.Validate(propertyValue, CultureInfo.CurrentCulture))
+                    .Where(result => !result.IsValid)
+                    .ToList()
+                    .ForEach(invalidResult => AddError(propertyName, invalidResult.ErrorContent as string));
+                
+                // Fix: invert result to match context
+                return !PropertyHasErrors(propertyName);
             }
-
+            
             // No rules found for the current property
             return true;
         }
-
+        
         // Adds the specified error to the errors collection if it is not 
         // already present, inserting it in the first position if 'isWarning' is 
         // false. Raises the ErrorsChanged event if the Errors collection changes. 
@@ -112,7 +118,7 @@ namespace SimpleValidator.ViewModels
                 propertyErrors = new List<string>();
                 this.Errors[propertyName] = propertyErrors;
             }
-
+            
             if (!propertyErrors.Contains(errorMessage))
             {
                 if (isWarning)
@@ -127,14 +133,14 @@ namespace SimpleValidator.ViewModels
                 OnErrorsChanged(propertyName);
             }
         }
-
+        
         public bool PropertyHasErrors(string propertyName) =>
             this.Errors.TryGetValue(propertyName, out List<string> propertyErrors) && propertyErrors.Any();
-
+        
         #region INotifyDataErrorInfo implementation
-
+        
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
+        
         // Returns all errors of a property. If the argument is 'null' instead of the property's name, 
         // then the method will return all errors of all properties.
         public IEnumerable GetErrors(string propertyName)
@@ -143,20 +149,20 @@ namespace SimpleValidator.ViewModels
             : this.Errors.TryGetValue(propertyName, out List<string> errors)
               ? errors
               : new List<string>();
-
+        
         // Returns if the view model has any invalid property
         public bool HasErrors => this.Errors.Any();
-
+        
         #endregion
-
+        
         protected virtual void OnErrorsChanged(string propertyName)
         {
             this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-
+        
         // Maps a property name to a list of errors that belong to this property
         private Dictionary<String, List<String>> Errors { get; }
-
+        
         // Maps a property name to a list of ValidationRules that belong to this property
         private Dictionary<String, List<ValidationRule>> ValidationRules { get; }
     }
