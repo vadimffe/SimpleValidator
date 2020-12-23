@@ -44,15 +44,15 @@ namespace SimpleValidator.ViewModels
                 {
                     // Accept the valid value
                     this._timeLimit = value;
+                    OnPropertyChanged();
                 }
-                OnPropertyChanged();
             }
         }
         
         // Constructor
         public ViewModel()
         {
-            this.ValidationMode = ValidationMode.SuppressInvalidInput;
+            this.ValidationMode = ValidationMode.AllowInvalidInput;
             
             this._timeRecordInterval = "1";
             this._timeLimit = "12:30";
