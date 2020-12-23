@@ -25,11 +25,24 @@ namespace SimpleValidator.ViewModels.Commands
         {
             return this._canExecute == null ? true : this._canExecute(parameter);
         }
+
+        public void InvalidateCommand() => this.InternalCanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+    private event EventHandler InternalCanExecuteChanged;
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add
+            {
+                CommandManager.RequerySuggested += value;
+                this.InternalCanExecuteChanged += value;
+            }
+            remove
+            {
+                CommandManager.RequerySuggested -= value;
+                this.InternalCanExecuteChanged -= value;
+            }
         }
+
         public void Execute(object parameter) { this._execute(parameter); }
         #endregion // ICommand Members 
     }

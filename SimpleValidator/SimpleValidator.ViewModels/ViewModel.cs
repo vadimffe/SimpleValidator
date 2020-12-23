@@ -17,7 +17,7 @@ namespace SimpleValidator.ViewModels
     public class ViewModel : BaseViewModel, INotifyDataErrorInfo
     {
         private ValidationMode ValidationMode { get; set; }
-        public ICommand SaveCommand => new RelayCommand(param => this.SaveSettings());
+        public ICommand SaveCommand => new RelayCommand(param => this.SaveSettings(), param => !this.HasErrors);
 
         // Example property, which validates its value before applying it
         private string _timeRecordInterval;
@@ -103,6 +103,10 @@ namespace SimpleValidator.ViewModels
                         propertyName,
                         invalidResult.Message,
                         invalidResult.Status == ValidationResultStatus.Warning));
+
+
+                // Force all subscribers of the SaveCommand to re-evaluate CanExecute
+                (this.SaveCommand as RelayCommand).InvalidateCommand();
 
                 return invalidResults.All(invalidResult => invalidResult.Status != ValidationResultStatus.Error);
             }
