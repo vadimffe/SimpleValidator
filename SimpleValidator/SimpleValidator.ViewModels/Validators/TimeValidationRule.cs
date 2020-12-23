@@ -6,28 +6,29 @@ namespace SimpleValidator.ViewModels
 {
     public class TimeValidationRule : ValidationRule
     {
+        private string timeFormat = "HH:mm";
+
         private bool ValidateTime(string time)
         {
-            DateTime ignored;
-            return DateTime.TryParseExact(time, "HH:mm",
-                                          CultureInfo.InvariantCulture,
-                                          DateTimeStyles.None,
-                                          out ignored);
+            return DateTime.TryParseExact(time, this.timeFormat,
+                       CultureInfo.InvariantCulture,
+                       DateTimeStyles.None,
+                       out _);
         }
 
+        // Call this method for compiletime type checking!
+        public ValidationResult Validate(string timeValue, CultureInfo cultureInfo)
+        {
+            return Validate(timeValue, cultureInfo);
+        }
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (string.IsNullOrEmpty((string)value))
-            {
-                return new ValidationResult(false, "Field cannot be empty");
-            }
-
-            else if (!ValidateTime((string)value))
-            {
-                return new ValidationResult(false, "Value must be HH:mm format");
-            }
-
-            return ValidationResult.ValidResult;
+            var text = value as string;
+            return string.IsNullOrEmpty(text)
+                ? new ValidationResult(false, $"Must not be empty")
+                : ValidateTime(text)
+                    ? ValidationResult.ValidResult
+                    : new ValidationResult(false, $"Must be {this.timeFormat} format");
         }
     }
 }
