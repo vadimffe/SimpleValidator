@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls;
-using System.Windows.Input;
-using SimpleValidator.ViewModels.Commands;
+﻿using SimpleValidator.ViewModels.Commands;
 using SimpleValidator.ViewModels.Validators;
-using ValidationResult = SimpleValidator.ViewModels.Validators.ValidationResult;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace SimpleValidator.ViewModels
 {
@@ -54,9 +46,6 @@ namespace SimpleValidator.ViewModels
 
             this._timeRecordInterval = "1";
             this._timeLimit = "12:30";
-
-            this.Errors = new Dictionary<string, List<string>>();
-            this.ValidationRules = new Dictionary<string, List<IValidationRule>>();
 
             // Create a Dictionary of validation rules for fast lookup. 
             // Each property name of a validated property maps to one or more ValidationRule.
